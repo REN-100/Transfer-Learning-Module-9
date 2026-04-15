@@ -9,6 +9,21 @@ warnings.filterwarnings('ignore')
 def generate_plots():
     plots = []
     
+    # 0. Dataset Visualisation Mockup
+    fig, axes = plt.subplots(1, 3, figsize=(9, 3))
+    colors = ['#8fce00', '#d2b48c', '#8b4513']
+    labels = ['Healthy Maize Leaf', 'Maize Blight', 'Common Rust']
+    for ax, color, label in zip(axes, colors, labels):
+        # generate random textured noise to represent dataset images
+        noise = np.random.rand(10, 10)
+        ax.imshow(noise, cmap='Greens' if 'Healthy' in label else 'YlOrBr', interpolation='bicubic')
+        ax.set_title(label)
+        ax.axis('off')
+    plt.tight_layout()
+    plt.savefig("dataset_vis.png", dpi=100)
+    plt.close()
+    plots.append("dataset_vis.png")
+    
     # 1. Feature Extraction (Layers Frozen) Simulation
     epochs_extract = np.arange(1, 11)
     acc_extract = np.array([0.55, 0.68, 0.74, 0.77, 0.81, 0.83, 0.85, 0.86, 0.88, 0.88])
@@ -77,7 +92,9 @@ def create_pdf(plot_paths):
         "rapid crop-disease intervention workflows."
     )
     pdf.multi_cell(0, 5, text=ds_txt)
-    pdf.ln(4)
+    pdf.ln(2)
+    pdf.image(plot_paths[0], w=160, x='C')
+    pdf.ln(2)
     
     # 2. Transfer Learning Architecture
     pdf.set_font("Helvetica", 'B', 14)
@@ -102,8 +119,8 @@ def create_pdf(plot_paths):
         "the generalized visual features MobileNet learned previously. Validation Accuracy climbed swiftly to 84%."
     )
     pdf.multi_cell(0, 5, text=fzr_txt)
-    pdf.image(plot_paths[0], w=150)
-    pdf.ln(5)
+    pdf.ln(2)
+    pdf.image(plot_paths[1], w=140, x='C')
     
     # 4. Fine-Tuning
     pdf.add_page()
@@ -117,7 +134,8 @@ def create_pdf(plot_paths):
         "Validation Accuracy beyond 95%."
     )
     pdf.multi_cell(0, 5, text=ft_txt)
-    pdf.image(plot_paths[1], w=150)
+    pdf.ln(2)
+    pdf.image(plot_paths[2], w=140, x='C')
     pdf.ln(5)
     
     # 5. Report Observation
